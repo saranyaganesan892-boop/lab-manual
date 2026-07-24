@@ -1,0 +1,78 @@
+import java.util.*;
+
+class Student {
+    int rollNo;
+    String name;
+    double percentage;
+
+    Student(int rollNo, String name, double percentage) {
+        this.rollNo = rollNo;
+        this.name = name;
+        this.percentage = percentage;
+    }
+}
+
+public class StudentRecordManagement {
+
+    public static void main(String[] args) {
+
+        // ArrayList
+        ArrayList<Student> list = new ArrayList<>();
+
+        // Add
+        list.add(new Student(101, "Rahul", 88.5));
+        list.add(new Student(102, "Sneha", 91.2));
+        list.add(new Student(103, "Kiran", 84.8));
+
+        System.out.println("Student Records (ArrayList)");
+        System.out.println("--------------------------------------");
+        System.out.println("Roll\tName\tPercentage");
+        System.out.println("--------------------------------------");
+
+        for (Student s : list) {
+            System.out.println(s.rollNo + "\t" + s.name + "\t" + s.percentage);
+        }
+
+        // Search
+        System.out.println("\nSearching for Roll No : 102");
+
+        for (Student s : list) {
+            if (s.rollNo == 102) {
+                System.out.println("\nRecord Found");
+                System.out.println("Roll No : " + s.rollNo);
+                System.out.println("Name : " + s.name);
+                System.out.println("Percentage : " + s.percentage);
+
+                // Update
+                s.percentage = 91.2;
+            }
+        }
+
+        // Delete
+        list.remove(0);
+
+        System.out.println("\nAfter Removing First Student");
+        System.out.println("--------------------------------------");
+        System.out.println("Roll\tName\tPercentage");
+        System.out.println("--------------------------------------");
+
+        for (Student s : list) {
+            System.out.println(s.rollNo + "\t" + s.name + "\t" + s.percentage);
+        }
+
+        // HashMap
+        HashMap<Integer, Student> map = new HashMap<>();
+
+        map.put(101, new Student(101, "Rahul", 88.5));
+        map.put(102, new Student(102, "Sneha", 91.2));
+        map.put(103, new Student(103, "Kiran", 84.8));
+
+        System.out.println("\nStudent Records (HashMap)");
+        System.out.println("--------------------------------------");
+
+        for (Integer key : map.keySet()) {
+            Student s = map.get(key);
+            System.out.println(key + " -> " + s.name + " (" + s.percentage + "%)");
+        }
+    }
+}
