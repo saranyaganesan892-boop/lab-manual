@@ -1,0 +1,137 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class StudentRegistrationForm extends JFrame implements ActionListener {
+
+    JLabel l1, l2, l3, l4, l5;
+    JTextField t1, t2;
+    JComboBox<String> course;
+    JRadioButton male, female;
+    JCheckBox java, python;
+    JButton submit, clear;
+    JTextArea result;
+    ButtonGroup bg;
+
+    StudentRegistrationForm() {
+
+        setTitle("Student Registration Form");
+        setSize(450, 500);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        l1 = new JLabel("Name");
+        l1.setBounds(30, 30, 100, 25);
+        add(l1);
+
+        t1 = new JTextField();
+        t1.setBounds(150, 30, 180, 25);
+        add(t1);
+
+        l2 = new JLabel("Roll Number");
+        l2.setBounds(30, 70, 100, 25);
+        add(l2);
+
+        t2 = new JTextField();
+        t2.setBounds(150, 70, 180, 25);
+        add(t2);
+
+        l3 = new JLabel("Course");
+        l3.setBounds(30, 110, 100, 25);
+        add(l3);
+
+        String c[] = {"CSE", "ECE", "EEE", "IT"};
+        course = new JComboBox<>(c);
+        course.setBounds(150, 110, 180, 25);
+        add(course);
+
+        l4 = new JLabel("Gender");
+        l4.setBounds(30, 150, 100, 25);
+        add(l4);
+
+        male = new JRadioButton("Male");
+        male.setBounds(150, 150, 80, 25);
+        add(male);
+
+        female = new JRadioButton("Female");
+        female.setBounds(240, 150, 90, 25);
+        add(female);
+
+        bg = new ButtonGroup();
+        bg.add(male);
+        bg.add(female);
+
+        l5 = new JLabel("Skills");
+        l5.setBounds(30, 190, 100, 25);
+        add(l5);
+
+        java = new JCheckBox("Java");
+        java.setBounds(150, 190, 70, 25);
+        add(java);
+
+        python = new JCheckBox("Python");
+        python.setBounds(230, 190, 80, 25);
+        add(python);
+
+        submit = new JButton("Submit");
+        submit.setBounds(80, 240, 100, 30);
+        add(submit);
+
+        clear = new JButton("Clear");
+        clear.setBounds(220, 240, 100, 30);
+        add(clear);
+
+        result = new JTextArea();
+        result.setBounds(30, 290, 370, 130);
+        add(result);
+
+        submit.addActionListener(this);
+        clear.addActionListener(this);
+
+        setVisible(true);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+
+        if (e.getSource() == submit) {
+
+            String gender = "";
+
+            if (male.isSelected())
+                gender = "Male";
+            else if (female.isSelected())
+                gender = "Female";
+
+            String skill = "";
+
+            if (java.isSelected())
+                skill += "Java ";
+
+            if (python.isSelected())
+                skill += "Python";
+
+            result.setText(
+                    "Student Details\n\n" +
+                    "Name : " + t1.getText() +
+                    "\nRoll Number : " + t2.getText() +
+                    "\nCourse : " + course.getSelectedItem() +
+                    "\nGender : " + gender +
+                    "\nSkills : " + skill);
+        }
+
+        if (e.getSource() == clear) {
+
+            t1.setText("");
+            t2.setText("");
+            course.setSelectedIndex(0);
+            bg.clearSelection();
+            java.setSelected(false);
+            python.setSelected(false);
+            result.setText("");
+        }
+    }
+
+    public static void main(String[] args) {
+        new StudentRegistrationForm();
+    }
+}
