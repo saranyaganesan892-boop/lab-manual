@@ -1,65 +1,95 @@
-import java.util.Scanner;
+import java.awt.*;
+import java.awt.event.*;
 
-class PiCalculator {
+public class SimpleCalculator extends Frame implements ActionListener
+{
+    Label l1, l2, l3;
+    TextField t1, t2, t3;
+    Button b1, b2, b3, b4;
 
-    // Private variable
-    private double pi;
+    SimpleCalculator()
+    {
+        l1 = new Label("First Number");
+        l2 = new Label("Second Number");
+        l3 = new Label("Result");
 
-    // Public method
-    public void calculatePi(int terms) {
+        t1 = new TextField();
+        t2 = new TextField();
+        t3 = new TextField();
 
-        pi = 0.0;
+        b1 = new Button("Add");
+        b2 = new Button("Subtract");
+        b3 = new Button("Multiply");
+        b4 = new Button("Divide");
 
-        for (int i = 0; i < terms; i++) {
-            if (i % 2 == 0)
-                pi += 4.0 / (2 * i + 1);
-            else
-                pi -= 4.0 / (2 * i + 1);
-        }
+        l1.setBounds(50, 50, 100, 30);
+        t1.setBounds(170, 50, 100, 30);
 
-        System.out.println("\nCalculating Pi using Leibniz Series...\n");
+        l2.setBounds(50, 100, 100, 30);
+        t2.setBounds(170, 100, 100, 30);
 
-        displayResult();
-        displayPrecision(terms);
-        displayPrivate();
+        l3.setBounds(50, 150, 100, 30);
+        t3.setBounds(170, 150, 100, 30);
+
+        b1.setBounds(50, 220, 60, 30);
+        b2.setBounds(120, 220, 70, 30);
+        b3.setBounds(200, 220, 70, 30);
+        b4.setBounds(280, 220, 60, 30);
+
+        add(l1);
+        add(t1);
+        add(l2);
+        add(t2);
+        add(l3);
+        add(t3);
+
+        add(b1);
+        add(b2);
+        add(b3);
+        add(b4);
+
+        b1.addActionListener(this);
+        b2.addActionListener(this);
+        b3.addActionListener(this);
+        b4.addActionListener(this);
+
+        setTitle("Simple Calculator");
+        setSize(400, 350);
+        setLayout(null);
+        setVisible(true);
+
+        addWindowListener(new WindowAdapter()
+        {
+            public void windowClosing(WindowEvent e)
+            {
+                System.exit(0);
+            }
+        });
     }
 
-    // Public method
-    public void displayResult() {
-        System.out.println("Public Method - Displaying Result:");
-        System.out.println("Approximated value of Pi: " + pi);
+    public void actionPerformed(ActionEvent e)
+    {
+        double n1 = Double.parseDouble(t1.getText());
+        double n2 = Double.parseDouble(t2.getText());
+        double result = 0;
+
+        if (e.getSource() == b1)
+            result = n1 + n2;
+
+        else if (e.getSource() == b2)
+            result = n1 - n2;
+
+        else if (e.getSource() == b3)
+            result = n1 * n2;
+
+        else if (e.getSource() == b4)
+            result = n1 / n2;
+
+        t3.setText(String.valueOf(result));
     }
 
-    // Protected method
-    protected void displayPrecision(int terms) {
-        System.out.println("\nProtected Method - Displaying Precision Info:");
-        System.out.println("Precision used: " + terms + " terms");
-        System.out.println("Series used: Leibniz Series");
-        System.out.println("(4/1 - 4/3 + 4/5 - 4/7 + 4/9 ...)");
-    }
-
-    // Private method
-    private void displayPrivate() {
-        System.out.println("\nPrivate Data - Accessed only within class:");
-        System.out.println("Raw computed value (private): " + pi);
-    }
-}
-
-public class Main {
-
-    public static void main(String[] args) {
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.println("=== Pi Calculator using Access Specifiers ===");
-
-        System.out.print("Enter the number of terms for Pi approximation: ");
-        int terms = sc.nextInt();
-
-        PiCalculator obj = new PiCalculator();
-
-        obj.calculatePi(terms);
-
-        sc.close();
+    public static void main(String args[])
+    {
+        new SimpleCalculator();
     }
 }
