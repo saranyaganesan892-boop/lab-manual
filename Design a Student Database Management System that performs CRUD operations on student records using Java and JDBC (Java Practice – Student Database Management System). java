@@ -1,0 +1,66 @@
+//SQL
+
+CREATE DATABASE college;
+USE college;
+
+CREATE TABLE student
+(
+    rollno INT PRIMARY KEY,
+    name VARCHAR(50),
+    department VARCHAR(30),
+    marks INT
+);
+
+INSERT INTO student VALUES
+(101,'Rahul','CSE',87),
+(102,'Sneha','IT',91);
+
+//JAVA
+
+import java.sql.*;
+
+public class StudentJDBC {
+
+    public static void main(String[] args) {
+
+        String url = "jdbc:mysql://localhost:3306/college";
+        String user = "root";
+        String password = "root"; // Change if your MySQL password is different
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, user, password);
+
+            Statement st = con.createStatement();
+
+            // UPDATE
+            st.executeUpdate("UPDATE student SET marks=95 WHERE rollno=101");
+            System.out.println("Record Updated Successfully.\n");
+
+            // READ
+            ResultSet rs = st.executeQuery("SELECT * FROM student");
+
+            System.out.println("Student Records");
+            System.out.println("--------------------------------------------");
+            System.out.println("Roll\tName\tDepartment\tMarks");
+            System.out.println("--------------------------------------------");
+
+            while (rs.next()) {
+                System.out.println(rs.getInt("rollno") + "\t"
+                        + rs.getString("name") + "\t"
+                        + rs.getString("department") + "\t\t"
+                        + rs.getInt("marks"));
+            }
+
+            // DELETE
+            st.executeUpdate("DELETE FROM student WHERE rollno=102");
+            System.out.println("\nRecord Deleted Successfully.");
+
+            con.close();
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
