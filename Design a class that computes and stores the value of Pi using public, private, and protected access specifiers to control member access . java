@@ -1,6 +1,3 @@
-Design a class that computes and stores the value of Pi using public, private, and protected access specifiers to control member access . java       
-
-
 import java.util.Scanner;
 
 class PiValue {
