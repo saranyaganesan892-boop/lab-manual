@@ -1,129 +1,73 @@
 import java.io.*;
-import java.util.*;
+import java.util.Scanner;
 
-public class StudentFileManagement {
+public class StudentFile {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String fileName = "students.txt";
 
-    public static void main(String[] args) throws IOException {
+        System.out.println("Enter Details of 3 Students\n");
 
-        Scanner sc = new Scanner(System.in);
-        FileWriter fw = new FileWriter("students.txt");
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
+            for (int i = 1; i <= 3; i++) {
+                System.out.println("Student " + i);
+                System.out.print("Roll No : ");
+                String roll = scanner.nextLine();
+                
+                System.out.print("Name : ");
+                String name = scanner.nextLine();
+                
+                System.out.print("Marks : ");
+                String marks = scanner.nextLine();
+                
+                System.out.println();
 
-        System.out.print("Enter number of students: ");
-        int n = sc.nextInt();
-        sc.nextLine();
-
-        System.out.println("\nEnter Details of " + n + " Students");
-
-        for (int i = 1; i <= n; i++) {
-            System.out.println("\nStudent " + i);
-
-            System.out.print("Roll No : ");
-            int roll = sc.nextInt();
-            sc.nextLine();
-
-            System.out.print("Name : ");
-            String name = sc.nextLine();
-
-            System.out.print("Marks : ");
-            int marks = sc.nextInt();
-            sc.nextLine();
-
-            fw.write(roll + "," + name + "," + marks + "\n");
+                // Save record to file
+                bw.write(roll + "," + name + "," + marks);
+                bw.newLine();
+            }
+            System.out.println("Student records saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
         }
 
-        fw.close();
-
-        System.out.println("\nStudent records saved successfully.");
-
-        // Display Records
-        System.out.println("\n------ Student Records ------");
-
-        BufferedReader br = new BufferedReader(new FileReader("students.txt"));
-        String line;
-
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
+        // Display saved records
+        System.out.println("----- Student Records -----");
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
         }
-        br.close();
 
-        // Search Record
+        // Search for a student by Roll Number
         System.out.print("\nEnter Roll Number to Search : ");
-        int searchRoll = sc.nextInt();
+        String searchRoll = scanner.nextLine().trim();
+        System.out.println();
 
-        br = new BufferedReader(new FileReader("students.txt"));
         boolean found = false;
-
-        while ((line = br.readLine()) != null) {
-
-            String data[] = line.split(",");
-
-            if (Integer.parseInt(data[0]) == searchRoll) {
-                System.out.println("\nStudent Found");
-                System.out.println("Roll No : " + data[0]);
-                System.out.println("Name : " + data[1]);
-                System.out.println("Marks : " + data[2]);
-                found = true;
-                break;
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] details = line.split(",");
+                if (details[0].trim().equals(searchRoll)) {
+                    System.out.println("Student Found\n");
+                    System.out.println("Roll No : " + details[0]);
+                    System.out.println("Name : " + details[1]);
+                    System.out.println("Marks : " + details[2]);
+                    found = true;
+                    break;
+                }
             }
-        }
-
-        br.close();
-
-        if (!found) {
-            System.out.println("Student Not Found");
-        }
-
-        // Update Marks
-        System.out.print("\nEnter Roll Number to Update Marks : ");
-        int updateRoll = sc.nextInt();
-
-        File inputFile = new File("students.txt");
-        File tempFile = new File("temp.txt");
-
-        br = new BufferedReader(new FileReader(inputFile));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile));
-
-        found = false;
-
-        while ((line = br.readLine()) != null) {
-
-            String data[] = line.split(",");
-
-            if (Integer.parseInt(data[0]) == updateRoll) {
-
-                System.out.print("Enter New Marks : ");
-                int newMarks = sc.nextInt();
-
-                bw.write(data[0] + "," + data[1] + "," + newMarks);
-                found = true;
-            } else {
-                bw.write(line);
+            if (!found) {
+                System.out.println("Student record not found.");
             }
-
-            bw.newLine();
+        } catch (IOException e) {
+            System.out.println("Error searching file: " + e.getMessage());
         }
 
-        br.close();
-        bw.close();
-
-        inputFile.delete();
-        tempFile.renameTo(inputFile);
-
-        if (found)
-            System.out.println("Marks Updated Successfully.");
-        else
-            System.out.println("Student Not Found.");
-
-        // Display Updated Records
-        System.out.println("\n------ Updated Student Records ------");
-
-        br = new BufferedReader(new FileReader("students.txt"));
-
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
-        }
-
-        br.close();
-        sc.close();
+        scanner.close();
     }
 }
