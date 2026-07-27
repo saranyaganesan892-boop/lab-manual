@@ -1,66 +1,83 @@
-//SQL
+Design a Student Database Management System that performs CRUD operations on student records using Java and JDBC (Java Practice – Student Database Management System).java
 
-CREATE DATABASE college;
-USE college;
-
-CREATE TABLE student
-(
-    rollno INT PRIMARY KEY,
-    name VARCHAR(50),
-    department VARCHAR(30),
-    marks INT
-);
-
-INSERT INTO student VALUES
-(101,'Rahul','CSE',87),
-(102,'Sneha','IT',91);
-
-//JAVA
 
 import java.sql.*;
 
 public class StudentJDBC {
+    static final String URL = "jdbc:mysql://localhost:3306/college";
+    static final String USER = "root";
+    static final String PASS = "password"; // Replace with your MySQL password
 
     public static void main(String[] args) {
-
-        String url = "jdbc:mysql://localhost:3306/college";
-        String user = "root";
-        String password = "root"; // Change if your MySQL password is different
-
         try {
+            // Load Driver and Connect
             Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(URL, USER, PASS);
 
-            Connection con = DriverManager.getConnection(url, user, password);
+            // 1. Insert Records
+            String insertSQL = "INSERT INTO student (rollno, name, department, marks) VALUES (?, ?, ?, ?)";
+            PreparedStatement pstmtInsert = conn.prepareStatement(insertSQL);
 
-            Statement st = con.createStatement();
+            pstmtInsert.setInt(1, 101);
+            pstmtInsert.setString(2, "Rahul");
+            pstmtInsert.setString(3, "CSE");
+            pstmtInsert.setInt(4, 87);
+            pstmtInsert.executeUpdate();
 
-            // UPDATE
-            st.executeUpdate("UPDATE student SET marks=95 WHERE rollno=101");
+            pstmtInsert.setInt(1, 102);
+            pstmtInsert.setString(2, "Sneha");
+            pstmtInsert.setString(3, "ISE");
+            pstmtInsert.setInt(4, 91);
+            pstmtInsert.executeUpdate();
+
+            System.out.println("Records Inserted Successfully.\n");
+
+            // 2. Update Record
+            String updateSQL = "UPDATE student SET marks = ? WHERE rollno = ?";
+            PreparedStatement pstmtUpdate = conn.prepareStatement(updateSQL);
+            pstmtUpdate.setInt(1, 95);
+            pstmtUpdate.setInt(2, 101);
+            pstmtUpdate.executeUpdate();
+
             System.out.println("Record Updated Successfully.\n");
 
-            // READ
-            ResultSet rs = st.executeQuery("SELECT * FROM student");
+            // 3. Search and Display Student Details
+            String searchSQL = "SELECT * FROM student WHERE rollno = ?";
+            PreparedStatement pstmtSearch = conn.prepareStatement(searchSQL);
+            pstmtSearch.setInt(1, 101);
+            ResultSet rsSearch = pstmtSearch.executeQuery();
 
-            System.out.println("Student Records");
-            System.out.println("--------------------------------------------");
-            System.out.println("Roll\tName\tDepartment\tMarks");
-            System.out.println("--------------------------------------------");
-
-            while (rs.next()) {
-                System.out.println(rs.getInt("rollno") + "\t"
-                        + rs.getString("name") + "\t"
-                        + rs.getString("department") + "\t\t"
-                        + rs.getInt("marks"));
+            System.out.println("Student Details");
+            if (rsSearch.next()) {
+                System.out.println("Roll No : " + rsSearch.getInt("rollno"));
+                System.out.println("Name    : " + rsSearch.getString("name"));
+                System.out.println("Department : " + rsSearch.getString("department"));
+                System.out.println("Marks   : " + rsSearch.getInt("marks"));
             }
 
-            // DELETE
-            st.executeUpdate("DELETE FROM student WHERE rollno=102");
-            System.out.println("\nRecord Deleted Successfully.");
+            // 4. Display All Student Records
+            String displaySQL = "SELECT * FROM student";
+            PreparedStatement pstmtDisplay = conn.prepareStatement(displaySQL);
+            ResultSet rsDisplay = pstmtDisplay.executeQuery();
 
-            con.close();
+            System.out.println("\nStudent Records");
+            System.out.println("---------------------------------------------");
+            System.out.printf("%-7s %-7s %-15s %-5s\n", "Roll", "Name", "Department", "Marks");
+            System.out.println("---------------------------------------------");
+
+            while (rsDisplay.next()) {
+                System.out.printf("%-7d %-7s %-15s %-5d\n",
+                        rsDisplay.getInt("rollno"),
+                        rsDisplay.getString("name"),
+                        rsDisplay.getString("department"),
+                        rsDisplay.getInt("marks"));
+            }
+
+            // Close resources
+            conn.close();
 
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 }
